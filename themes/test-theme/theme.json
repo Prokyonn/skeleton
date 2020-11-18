@@ -1,0 +1,13 @@
+{
+  "name": "sulu/test-theme",
+  "authors": [
+    {
+      "name": "Max Mustermann"
+    }
+  ],
+  "extra": {
+    "sylius-theme": {
+      "title": "Test Theme"
+    }
+  }
+}
