@@ -1,0 +1,4 @@
+massive_vcloud:
+    type: rest
+    resource: "@MassiveVCloudBundle/Resources/config/routing_api.yaml"
+    prefix: /admin/api

@@ -3,5 +3,12 @@
 {% block content %}
     <h1>{{ content.title }}</h1>
 
-    {{ content.article|raw }}
+    <h2>SmartContent Pages</h2>
+    {{ dump(content.pages) }}
+
+    <h2>SmartContent Snippets</h2>
+    {{ dump(content.snippets) }}
+
+    <h2>SmartContent Media</h2>
+    {{ dump(content.media) }}
 {% endblock %}

@@ -42,4 +42,9 @@ return [
     FOS\JsRoutingBundle\FOSJsRoutingBundle::class => ['all' => true, 'admin' => true],
     Symfony\Cmf\Bundle\RoutingBundle\CmfRoutingBundle::class => ['all' => true, 'website' => true],
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
+    ONGR\ElasticsearchBundle\ONGRElasticsearchBundle::class => ['all' => true],
+    Sulu\Bundle\ContentBundle\SuluContentBundle::class => ['all' => true],
+    HandcraftedInTheAlps\Bundle\SuluResourceBundle\HandcraftedInTheAlpsSuluResourceBundle::class => ['all' => true],
+    Massive\Bundle\VCloudBundle\MassiveVCloudBundle::class => ['all' => true],
+    Sulu\Bundle\ArticleBundle\SuluArticleBundle::class => ['all' => true],
 ];

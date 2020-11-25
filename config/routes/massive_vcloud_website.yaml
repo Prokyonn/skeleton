@@ -1,0 +1,2 @@
+massive_vcloud:
+    resource: "@MassiveVCloudBundle/Resources/config/routing_website.yaml"

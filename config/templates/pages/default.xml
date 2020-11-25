@@ -36,11 +36,76 @@
             <tag name="sulu.rlp"/>
         </property>
 
-        <property name="article" type="text_editor">
+        <property name="pages" type="smart_content">
             <meta>
-                <title lang="en">Article</title>
-                <title lang="de">Artikel</title>
+                <title lang="en">Page Smart Content</title>
             </meta>
+
+            <params>
+                <param name="properties" type="collection">
+                    <param name="title" value="title"/>
+                    <param name="description" value="excerpt.description"/>
+                </param>
+                <param name="present_as" type="collection">
+                    <param name="one">
+                        <meta>
+                            <title lang="en">One column</title>
+                        </meta>
+                    </param>
+                    <param name="two">
+                        <meta>
+                            <title lang="en">Two column</title>
+                        </meta>
+                    </param>
+                </param>
+            </params>
         </property>
+
+        <property name="snippets" type="smart_content">
+            <meta>
+                <title lang="en">Snippet Smart Content</title>
+            </meta>
+
+            <params>
+                <param name="provider" value="snippets"/>
+                <param name="properties" type="collection">
+                    <param name="title" value="title"/>
+                    <param name="description" value="excerpt.description"/>
+                </param>
+                <param name="present_as" type="collection">
+                    <param name="one">
+                        <meta>
+                            <title lang="en">One column</title>
+                        </meta>
+                    </param>
+                    <param name="two">
+                        <meta>
+                            <title lang="en">Two column</title>
+                        </meta>
+                    </param>
+                </param>
+            </params>
+        </property>
+
+        <property name="media" type="smart_content">
+            <meta>
+                <title lang="en">Media Smart Content</title>
+            </meta>
+
+            <params>
+                <param name="provider" value="media"/>
+            </params>
+        </property>
+
+        <property name="articles" type="smart_content">
+            <meta>
+                <title lang="en">Article Smart Content</title>
+            </meta>
+
+            <params>
+                <param name="provider" value="articles"/>
+            </params>
+        </property>
+
     </properties>
 </template>

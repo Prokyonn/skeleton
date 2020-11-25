@@ -33,9 +33,14 @@
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-fixtures-bundle": "^3.0",
         "friendsofsymfony/http-cache-bundle": "^2.8",
+        "handcraftedinthealps/sulu-resource-bundle": "dev-master as 0.2.1",
         "handcraftedinthealps/zendsearch": "^2.0",
         "jackalope/jackalope-doctrine-dbal": "^1.3",
-        "sulu/sulu": "~2.1.1",
+        "sulu/sulu": "dev-release/2.1",
+        "massive/vcloud-bundle": "dev-master",
+        "elasticsearch/elasticsearch": "^6.7",
+        "sulu/content-bundle": "dev-master as 0.4",
+        "sulu/article-bundle": "^2.1",
         "symfony/config": "^5.1",
         "symfony/dotenv": "^5.1",
         "symfony/flex": "^1.2",
@@ -46,6 +51,7 @@
         "symfony/swiftmailer-bundle": "^3.4",
         "symfony/twig-bundle": "^5.1"
     },
+    "minimum-stability": "dev",
     "require-dev": {
         "phpcr/phpcr-shell": "^1.2",
         "symfony/debug-bundle": "^5.1",
@@ -95,6 +101,12 @@
             "php -r \"file_put_contents('.gitignore', str_replace(['composer.lock' . PHP_EOL, 'symfony.lock' . PHP_EOL, 'package-lock.json' . PHP_EOL], ['', '', ''], file_get_contents('.gitignore')));\""
         ]
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@gitlab.massiveart.com:bundle/massive-vcloud-bundle.git"
+        }
+    ],
     "config": {
         "sort-packages": true
     },

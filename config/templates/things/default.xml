@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<template xmlns="http://schemas.sulu.io/template/template"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
+
+    <key>default</key>
+
+    <view>things/default</view>
+    <controller>Massive\Bundle\VCloudBundle\Thing\UserInterface\Controller\Website\ThingController::indexAction
+    </controller>
+    <cacheLifetime>604800</cacheLifetime>
+
+    <meta>
+        <title lang="en">Default</title>
+        <title lang="de">Standard</title>
+    </meta>
+
+    <properties>
+        <property name="title" type="text_line" mandatory="true">
+            <meta>
+                <title lang="en">Title</title>
+                <title lang="de">Titel</title>
+            </meta>
+            <params>
+                <param name="headline" value="true"/>
+            </params>
+
+            <tag name="sulu.rlp.part"/>
+            <tag name="sulu.search.field" role="title"/>
+        </property>
+
+        <property name="url" type="route" mandatory="true">
+            <meta>
+                <title lang="en">Resourcelocator</title>
+                <title lang="de">Adresse</title>
+            </meta>
+
+            <tag name="sulu.rlp"/>
+            <tag name="sulu.search.field" role="url"/>
+        </property>
+
+        <property name="description" type="text_editor">
+            <meta>
+                <title lang="en">Description</title>
+                <title lang="de">Beschreibung</title>
+            </meta>
+            <tag name="sulu.search.field" role="description"/>
+        </property>
+
+        <property name="test" type="text_area">
+            <meta>
+                <title lang="en">Test</title>
+                <title lang="de">Test</title>
+            </meta>
+            <tag name="sulu.search.field" type="string"/>
+        </property>
+
+        <property name="things" type="smart_content">
+            <meta>
+                <title lang="en">Smart Content</title>
+            </meta>
+
+            <params>
+                <param name="provider" value="things"/>
+            </params>
+        </property>
+    </properties>
+</template>

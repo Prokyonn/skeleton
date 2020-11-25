@@ -1,0 +1,112 @@
+massive_vcloud:
+    canonical:
+        # content_owner_id: '744611d6-9be6-4802-98ff-5a3724d1c513'
+        content_owner_id: 'abcd'
+        webspace_key: example
+        publish_url: 'https://example.org/publish_canonical?token=1234'
+    included_properties:
+        - image
+        - photo
+        - image.author
+        - photo.author
+    import:
+        things:
+            # token: '3dfcfc1609cfc91e21fe15ecf932cf8e' # lech
+            token: 'dde3b17219efca0c50f355977d40cd17' # bvt
+            # endpoint_base: 'https://v-cloud.lechzuers.com/api/v4' # lech
+            endpoint_base: 'https://v-cloud.bodensee-vorarlberg.com/api/v4' # bvt
+            endpoints:
+                small:
+                    id: 'endpoints/78a02b3e-4888-4b80-8316-d160c2fe0a59'
+                big:
+                    id: 'endpoints/a645eb54-494b-480c-992f-75eca9c6a567'
+                bvt:
+                    id: 'endpoints/ee5636d3-24f5-4baa-ad91-e67d2a26eb31'
+                lech:
+                    id: 'endpoints/f0a0db0d-5cf0-44f4-bce2-210be7e713a9'
+                deletions:
+                    id: 'things/deleted'
+                    deletions: true
+            unpublish_classification_ids:
+                - '06aa6f1d-8d2c-4f88-a28a-a58db679e635' # Inhaltspools / Archiv
+                - '7ea059e0-fa4c-4eba-94b2-84c502ebdd88' # Inhaltspools / Entwurf
+            locales: ['en', 'de']
+            types:
+                LodgingBusiness: 'lodging'
+                TouristAttraction: 'tourist'
+                Place: 'place'
+            hook:
+                token: 'test-token-321'
+
+        classifications:
+            endpoint_base: 'https://v-cloud.bodensee-vorarlberg.com/api/v3'
+            token: '2db8bd624122bc0798d1e760dfcc3e42'
+            locales: ['en', 'de']
+            category_root_key: classifications
+            included_trees:
+                - 'f0aaa1ba-471f-4f82-9efc-76114716a08e' # Geschlecht
+                - '5b45edf3-94c9-43d3-b2e0-4681d74c41a5' # Wochentage
+                - 'f935a271-688b-43fc-9814-8efdc6a9a33f' # Monate
+                - '521c708a-cd8f-47f1-a5c7-b70f342eea3f' # Tags
+                - 'e0efbefe-d897-4cc1-aada-5c9f11e8d68b' # Ausgabekanäle
+                - '9b6673a3-a3f0-4102-ac54-3c8c0c7ebdfe' # Beschreibungsarten
+                - '0a44e79f-82db-4311-bf74-6e26d0c4d980' # POI - Kategorien
+                - 'acbfbfdc-8470-4e63-9471-8da94c05a5fc' # MediaArchive - Tags
+                - '29dbb963-4f33-47f2-a57a-eff5f79be7eb' # Gourmet-Bewertungen
+                - 'da56bfb7-85ba-4448-850a-b9f732e25b70' # Feratel - Veranstaltungstags
+                - 'de2777b6-22a4-4334-aeb4-6fbc2eb77a7b' # Feratel - Status
+                - 'f16509d5-5da1-4c38-9b25-0ff8e0100f00' # Feratel - Angebot - Status
+                - 'dd5dd94f-88ef-45a1-9747-8ac9bbf031ac' # Feratel - Preis - Typ
+                - '70ac3c98-8aa1-4767-94f7-ecef466e7377' # Ländercodes
+                - 'aec29c51-cbdb-4186-ae85-8ab54e7e8b9d' # Zuordnung Stadt
+                - 'bbd2bbf5-e749-404f-810d-ada31932488f' # Bodensee-Vorarlberg Freizeitkarte
+                - '23fbb93e-b0d9-422e-9621-89b3f29f87ef' # Kategoriebaum Bodensee-Vorarlberg Tourismus
+                - 'c37d8a45-54b8-45fb-a442-bb01f29f2428' # OutdoorActive - Touren-Kategorien
+                - 'e45eb0e8-fb01-4936-809a-92bc011da3b1' # OutdoorActive - POI-Kategorien
+                - 'd65e21e4-9f5c-479f-b1b5-732006f78330' # OutdoorActive - Regionen
+                - 'efc8e98d-7410-48bc-8ead-0be94216710e' # OutdoorActive - FrontendTypes
+                - '5c875cd0-fcb2-4bc7-b598-72f959dd11c5' # OutdoorActive - Tags
+                - 'e38943e5-07a6-4e43-9f2e-90a69a31008b' # Booking.com - HotelTypes
+                - 'e6b0ece2-7321-4ee5-afb2-a7b284b803eb' # Wetter
+                - '4aa1e02d-3dfc-42a6-8dcd-bf8467538d60' # Jahreszeit
+                - 'bd830a6b-3d9d-4ab6-83b0-01ca1f3b28da' # OutdoorActive - Quellen
+                - 'ea992b52-dcb5-4217-b827-d17d9f4a4405' # Externer Status
+                - 'fe93a094-254e-4b6e-8e14-c9c95b5e78a1' # Lizenzen
+                - 'd0ac4ff3-72db-4a7b-82c8-3c8c0fad8cee' # Content Owner
+                - 'e2753ddd-72ed-4974-88ad-045dafd5bb7f' # Inhaltstypen
+                - 'd57afb72-f9b6-4e7f-9e6f-23ee0c4db28f' # Veranstaltungsteilnahmemodus
+                - '501eb9fe-c0c2-4c36-94d3-2d500c2fe447' # Veranstaltungsstatus
+                - 'f64c510b-d006-4b68-9cf2-febae2791273' # Gästekarten
+                - 'dd90f9d9-d699-4d44-b53b-b6b5dc0bb795' # Inhaltspools
+                - '959f0658-fbae-4d0b-9463-4c0bf76b4d13' # Rechte
+                - 'fdb14965-c375-44a1-9953-325df75e2ed0' # POI Kategorien - Hohenems.travel
+                - 'c2babab9-5a8d-41a5-b10e-92ed68337b5b' # Administrative Einheiten
+                - '020d80b4-ecf7-4f1b-adab-93ebf94587aa' # Booking.com - FacilityTypes
+                - '0019cff3-3371-4089-aa89-b1805403dcdc' # Eyebase - Tags
+                - '9f3fb482-8300-44e7-8222-c60aa2ddc63a' # Eyebase - Status
+                - '4a0163b2-d130-408b-bb30-225aa3ed3b9b' # Eyebase - Lizenzen
+                - '426d687b-4d4f-4fc8-959b-ce2bfbabc860' # Eyebase - Ordnerstruktur
+                - '77b022cb-9761-4c51-9092-6f9aa1352dd3' # Themen
+                - '8d67a7e6-3269-43c9-ab33-9ed51dfb5abf' # Sterne
+                - 'cd780554-1ba7-458c-a337-1e37f1874f19' # Hoteltypen Bodensee-Vorarlberg Tourismus
+                - 'c9c9f84a-d264-4c15-ae8a-046ad5bb88ca' # Preis-Währung
+                - 'cd3aeade-528b-43a8-a479-456c2fb5944f' # ActionTypes
+                - '4287a2f1-82c3-4589-99c9-e54a69f7ee1b' # VTicket - Tags
+                - 'bec488ec-88ae-4aca-aa83-df4b79e18df2' # VTicket - Categories
+                - 'da285693-e8c6-4b45-987c-b97badce133d'
+            endpoints:
+                default:
+                    id: 'classification_trees'
+        media:
+            collection_key: vcloud
+    search:
+        index_name: vcloud
+        hosts:
+            - '%env(resolve:ES_HOST)%'
+
+sulu_media:
+    system_collections:
+        vcloud:
+            meta_title:
+                de: VCloud
+                en: VCloud
