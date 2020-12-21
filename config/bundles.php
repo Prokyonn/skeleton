@@ -42,4 +42,6 @@ return [
     FOS\JsRoutingBundle\FOSJsRoutingBundle::class => ['all' => true, 'admin' => true],
     Symfony\Cmf\Bundle\RoutingBundle\CmfRoutingBundle::class => ['all' => true, 'website' => true],
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
+    Sylius\Bundle\ThemeBundle\SyliusThemeBundle::class => ['all' => true],
+    Sulu\Bundle\ThemeBundle\SuluThemeBundle::class => ['all' => true],
 ];
