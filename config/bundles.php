@@ -20,7 +20,6 @@ return [
     Sulu\Bundle\MediaBundle\SuluMediaBundle::class => ['all' => true],
     Sulu\Bundle\SecurityBundle\SuluSecurityBundle::class => ['all' => true],
     Sulu\Bundle\CategoryBundle\SuluCategoryBundle::class => ['all' => true],
-    Sulu\Bundle\SnippetBundle\SuluSnippetBundle::class => ['all' => true],
     Sulu\Bundle\PageBundle\SuluPageBundle::class => ['all' => true],
     Sulu\Bundle\TagBundle\SuluTagBundle::class => ['all' => true],
     Sulu\Bundle\WebsiteBundle\SuluWebsiteBundle::class => ['all' => true],
@@ -46,4 +45,9 @@ return [
     Sulu\Bundle\ReferenceBundle\SuluReferenceBundle::class => ['all' => true],
     Scheb\TwoFactorBundle\SchebTwoFactorBundle::class => ['all' => true],
     League\FlysystemBundle\FlysystemBundle::class => ['all' => true],
+    Sulu\Content\Infrastructure\Symfony\HttpKernel\SuluContentBundle::class => ['all' => true],
+    Sulu\Messenger\Infrastructure\Symfony\HttpKernel\SuluMessengerBundle::class => ['all' => true],
+    Sulu\Article\Infrastructure\Symfony\HttpKernel\SuluArticleBundle::class => ['all' => true],
+    Sulu\Snippet\Infrastructure\Symfony\HttpKernel\SuluSnippetBundle::class => ['all' => true],
+    Sulu\Page\Infrastructure\Symfony\HttpKernel\SuluPageBundle::class => ['all' => true],
 ];
