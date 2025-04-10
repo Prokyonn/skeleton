@@ -3,15 +3,15 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/template-1.0.xsd">
 
-    <key>homepage</key>
+    <key>article</key>
 
-    <view>pages/homepage</view>
+    <view>articles/article</view>
     <controller>Sulu\Content\UserInterface\Controller\Website\ContentController::indexAction</controller>
-    <cacheLifetime>86400</cacheLifetime>
+    <cacheLifetime>604800</cacheLifetime>
 
     <meta>
-        <title lang="en">Homepage</title>
-        <title lang="de">Startseite</title>
+        <title lang="en">Article</title>
+        <title lang="de">Artikel</title>
     </meta>
 
     <properties>
@@ -27,7 +27,7 @@
             <tag name="sulu.rlp.part"/>
         </property>
 
-        <property name="url" type="resource_locator" mandatory="true">
+        <property name="url" type="route">
             <meta>
                 <title lang="en">Resourcelocator</title>
                 <title lang="de">Adresse</title>
