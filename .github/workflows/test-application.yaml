@@ -40,7 +40,7 @@ jobs:
 
                     - php-version: '8.3'
                       node-version: '22'
-                      npm-version: '10'
+                      npm-version: '9'
                       mysql-version: '8.0'
                       create-project: true
                       create-database: true
