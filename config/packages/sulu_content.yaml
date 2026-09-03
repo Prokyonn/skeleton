@@ -1,0 +1,35 @@
+sulu_content:
+    # Declaring a workflow is what enables the review flow, there is no separate on/off switch.
+    # With no `request_workflows` at all, the resolver returns null for every content and publishing
+    # stays direct.
+    request_workflows:
+        # The `default` workflow applies to every template that does not declare its own
+        # `sulu_content.request_workflow` form tag. A template tagged workflow="none" opts out.
+        default:
+            # Resource keys the default workflow covers. Snippets are deliberately left out, so they
+            # keep publishing directly. Remove this key to have it apply to every resource.
+            resources: ['pages', 'articles']
+
+            # Approvals needed before the request counts as approved. Validators count too: with the
+            # one validator below, three means the check plus two people. Self-review is not allowed,
+            # so those two are *other* users holding the `review` permission. Someone with the `live`
+            # permission can still take the "Bypass review and publish" route.
+            required_approvals: 3
+
+            # Hard gates, checked synchronously while `request_for_review` is applied. A failing
+            # prevalidator aborts the transition, so no request is ever created and the author is told
+            # what to fix while the content is still editable. Use these for anything that must never
+            # be waved through.
+            prevalidators:
+                seo_required:
+                    fields: ['title', 'description']
+                excerpt_required:
+                    fields: ['title']
+
+            # Checks that review like a person does, run over the message bus once the request exists.
+            # An approval counts towards `required_approvals`, a rejection is a comment that does not
+            # count and blocks nothing, and a check that never answers blocks nothing either. Route
+            # the message (see config/packages/messenger.yaml) to move them onto a worker, anything
+            # doing I/O beyond the local database must be routed.
+            validators:
+                unpublished_references: ~

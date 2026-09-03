@@ -5,13 +5,29 @@ framework:
 
         transports:
             # https://symfony.com/doc/current/messenger.html#transport-configuration
-            # async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # Requires symfony/doctrine-messenger for the doctrine:// DSN in .env, plus a one-off
+            # `bin/adminconsole messenger:setup-transports` to create the messenger_messages table
+            # (the DSN sets auto_setup=0).
+            async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
 
         routing:
             # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+
+            # This one line moves the request workflow validators off the "send for review" request
+            # and onto a worker. Remove it and they run inline, inside the author's request. Any
+            # validator doing I/O beyond the local database must be routed.
+            #
+            # The worker has to run through the admin kernel, the validators are registered in the
+            # admin context only:
+            #
+            #     bin/adminconsole messenger:consume async
+            #
+            # A check that never reports blocks nothing, so a stopped worker degrades the review to
+            # "no automated advice" rather than wedging it. A reviewer can run a single check again
+            # with the retry button on its row in the review overlay.
+            # 'Sulu\Content\Application\Message\ValidateWorkflowTransitionRequestMessage': async
 
 # when@test:
 #    framework:

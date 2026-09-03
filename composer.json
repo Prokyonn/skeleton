@@ -27,20 +27,21 @@
         "chat": "https://sulu.io/services-and-support#chat"
     },
     "require": {
-        "php": "^8.2",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
         "cmsig/seal-loupe-adapter": "^0.12.2",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-fixtures-bundle": "^3.6 || ^4.0",
         "doctrine/doctrine-migrations-bundle": "^3.3",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
         "friendsofsymfony/http-cache-bundle": "^3.0",
+        "php": "^8.2",
         "scheb/2fa-bundle": "^7.4",
         "scheb/2fa-email": "^7.4",
         "scheb/2fa-trusted-device": "^7.4",
         "stof/doctrine-extensions-bundle": "^1.11",
-        "sulu/sulu": "~3.0.9",
+        "sulu/sulu": "dev-feature/workflow-transition-request as 3.0.10",
         "symfony/config": "^7.4",
+        "symfony/doctrine-messenger": "7.4.*",
         "symfony/dotenv": "^7.4",
         "symfony/flex": "^1.17 || ^2.0",
         "symfony/framework-bundle": "^7.4",
@@ -201,5 +202,11 @@
             "allow-contrib": true,
             "require": "7.4.*"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Prokyonn/sulu.git"
+        }
+    ]
 }

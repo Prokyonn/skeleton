@@ -36,6 +36,13 @@
             <tag name="sulu.rlp"/>
         </property>
 
+        <property name="pages" type="page_selection">
+            <meta>
+                <title lang="en">Related pages</title>
+                <title lang="de">Verwandte Seiten</title>
+            </meta>
+        </property>
+
         <property name="article" type="text_editor">
             <meta>
                 <title lang="en">Article</title>

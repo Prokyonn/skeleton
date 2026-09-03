@@ -22,3 +22,16 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Request workflow validators need two tags that autoconfigure cannot infer: the `key` has to match
+    # the YAML key under `sulu_content.request_workflows.*.validators`, and `sulu.context: admin` keeps
+    # the service out of the website container (the validators exist in the admin container only).
+    App\RequestWorkflow\UnpublishedReferencesValidator:
+        tags:
+            - { name: sulu_content.request_workflow_validator, key: unpublished_references }
+            - { name: sulu.context, context: admin }
+
+    # The security bundle registers the mask converter by id only, with no interface alias.
+    App\Command\SetupReviewUsersCommand:
+        arguments:
+            $maskConverter: '@sulu_security.mask_converter'
