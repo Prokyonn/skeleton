@@ -39,6 +39,11 @@ final class UnpublishedReferencesValidator implements RequestWorkflowValidatorIn
     ) {
     }
 
+    public static function getKey(): string
+    {
+        return 'unpublished_references';
+    }
+
     public function check(ValidationContext $context): ValidationDecision
     {
         $request = $context->request;

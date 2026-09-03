@@ -1,7 +1,7 @@
 # Test "Request for publish"
 
 This branch of the skeleton is wired for the `feature/workflow-transition-request` branch of `Prokyonn/sulu`
-(twelve commits on top of Sulu 3.0): admin route import, workflow config, the `review` accounts command, a demo
+(eleven commits on top of Sulu 3.1): admin route import, workflow config, the `review` accounts command, a demo
 validator, a "Related pages" selection on the default page template, and a prebuilt admin bundle.
 
 ## 1. Install
@@ -15,7 +15,7 @@ Set `DATABASE_URL` in `.env.local`, then:
 
 ```bash
 bin/adminconsole sulu:build dev
-bin/adminconsole doctrine:schema:update --force --complete
+bin/adminconsole doctrine:migrations:migrate --no-interaction
 bin/adminconsole app:setup-review-users
 symfony server:start -d
 ```
@@ -51,7 +51,6 @@ Without a worker the validator row stays "waiting"; Retry re-queues it.
 
 ## 4. Known gaps
 
-- No migrations yet for the `wt_*` tables.
 - Request action appears after the first save only.
 - `resources` works on the `default` workflow only.
 - Insights "Requests for publishing" list not built.
