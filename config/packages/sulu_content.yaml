@@ -15,6 +15,7 @@ sulu_content:
             # so those two are *other* users holding the `review` permission. Someone with the `live`
             # permission can still take the "Bypass review and publish" route.
             required_approvals: 3
+            #required_human_approvals
 
             # Hard gates, checked synchronously while `request_for_review` is applied. A failing
             # prevalidator aborts the transition, so no request is ever created and the author is told
@@ -33,3 +34,9 @@ sulu_content:
             # doing I/O beyond the local database must be routed.
             validators:
                 unpublished_references: ~
+
+        # The "simple case": one approval, no automated checks, no hard gates. A page using the
+        # `simple-review` template goes to one reviewer and is publishable as soon as that person
+        # approves. Named workflows are selected by the template tag, not by resource.
+        simple:
+            required_approvals: 1
