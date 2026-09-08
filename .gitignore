@@ -59,3 +59,6 @@ phpstan.neon
 /.twig-cs-fixer.php
 /.twig-cs-fixer.cache
 ###< vincentlanglet/twig-cs-fixer ###
+
+# Playwright CLI scratch output
+.playwright-cli/

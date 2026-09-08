@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request for publish &mdash; overlay designs</title>
+<style>
+  :root {
+    --charade: #2e3036;
+    --raven: #73757d;
+    --iron: #e2e3e5;
+    --zircon: #f6f8fa;
+    --seagreen: #2da44e;
+    --cardinal: #cf222e;
+    --hokeypokey: #d4a72c;
+    --silver: #ccc;
+    --shakespeare: #52b6ca;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--zircon);
+    color: var(--charade);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 48px 24px 96px;
+  }
+  main { margin: 0 auto; max-width: 1080px; }
+  h1 { font-size: 30px; letter-spacing: -.01em; margin: 0 0 8px; }
+  h2 {
+    border-bottom: 1px solid var(--iron);
+    font-size: 21px;
+    margin: 56px 0 4px;
+    padding-bottom: 10px;
+  }
+  h3 { font-size: 15px; margin: 28px 0 8px; }
+  p { margin: 12px 0; }
+  .lede { color: var(--raven); margin-bottom: 4px; }
+  .meta { color: var(--raven); font-size: 13px; }
+  figure {
+    background: #fff;
+    border: 1px solid var(--iron);
+    border-radius: 8px;
+    margin: 16px 0 0;
+    overflow: hidden;
+  }
+  figure img { display: block; width: 100%; }
+  figcaption {
+    background: var(--zircon);
+    border-top: 1px solid var(--iron);
+    color: var(--raven);
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+  .pair { display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 820px) { .pair { grid-template-columns: 1fr; } }
+  .tag {
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    margin-right: 6px;
+    padding: 2px 10px;
+    text-transform: uppercase;
+  }
+  .tag-before { background: #fdecee; color: var(--cardinal); }
+  .tag-after { background: #e7f6ec; color: var(--seagreen); }
+  ul { margin: 12px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+  code {
+    background: var(--zircon);
+    border: 1px solid var(--iron);
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    padding: 1px 5px;
+  }
+  table { border-collapse: collapse; margin: 16px 0; width: 100%; }
+  th, td {
+    border-bottom: 1px solid var(--iron);
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { color: var(--raven); font-size: 13px; font-weight: 600; }
+  .swatch {
+    border-radius: 50%;
+    display: inline-block;
+    height: 14px;
+    margin-right: 8px;
+    vertical-align: -2px;
+    width: 14px;
+  }
+  .s-approved { background: var(--seagreen); }
+  .s-rejected { background: var(--cardinal); }
+  .s-pending { border: 2px solid var(--silver); }
+  .s-waiting { border: 2px solid var(--hokeypokey); }
+  .note {
+    background: #fffbe9;
+    border: 1px solid #f0e2ae;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Request for publish &mdash; overlay designs</h1>
+<p class="lede">Screenshots taken from the running skeleton at <code>https://127.0.0.1:8124/admin/</code>, branch
+<code>feature/workflow-transition-request</code>.</p>
+<p class="meta">Both overlays share one component, <code>WorkflowCheckCard</code>, so a change to a row lands in both.</p>
+
+<h2>1. Pre-validation overlay</h2>
+<p>Opens whenever a pre-validator blocks a transition &mdash; on <code>request_for_review</code>,
+on <code>publish</code> and on <code>bypass_publish</code> alike. Every configured check gets its own row,
+the passed ones included, so the author reads what is already done as well as what is left.</p>
+<figure>
+  <img alt="Pre-validation overlay with one failed and one passed check" src=".screenshots/prevalidation-overlay.png">
+  <figcaption>Nothing was written: the content stays editable and no request was created.</figcaption>
+</figure>
+
+<h2>2. Review overlay &mdash; two sections</h2>
+<p>Automated checks and people are two cards now. The check card is omitted entirely when the workflow
+configures no validators, so a simple workflow looks exactly as it did before.</p>
+<div class="pair">
+  <figure>
+    <img alt="Old review overlay, single card" src=".screenshots/before-review-overlay.png">
+    <figcaption><span class="tag tag-before">before</span> one card, checks and people mixed, green count,
+      comment folded behind a chevron</figcaption>
+  </figure>
+  <figure>
+    <img alt="New review overlay with two sections" src=".screenshots/review-overlay-sections.png">
+    <figcaption><span class="tag tag-after">after</span> checks first, then people; counts in normal text;
+      comment visible</figcaption>
+  </figure>
+</div>
+
+<h3>Row states</h3>
+<table>
+  <tr><th>Marker</th><th>State</th><th>Used for</th></tr>
+  <tr><td><span class="swatch s-approved"></span></td><td>approved</td>
+      <td>a check that passed, a person who approved</td></tr>
+  <tr><td><span class="swatch s-rejected"></span></td><td>rejected</td>
+      <td>a check that reported a problem, a person who rejected</td></tr>
+  <tr><td><span class="swatch s-pending"></span></td><td>pending (grey)</td>
+      <td>a check that has not answered yet</td></tr>
+  <tr><td><span class="swatch s-waiting"></span></td><td>waiting (amber)</td>
+      <td>an approval no person has given yet</td></tr>
+</table>
+<p>A check never borrows a person's wording: it reads <em>Passed</em>, <em>Reported a problem</em> or
+<em>Has not answered yet</em> rather than <em>Approved these changes</em>.</p>
+<figure>
+  <img alt="Review overlay with a pending check in grey" src=".screenshots/review-overlay-pending-check.png">
+  <figcaption>A pending check is grey and offers <em>Retry</em>; the outstanding approvals below it stay amber,
+    because those wait on a person.</figcaption>
+</figure>
+
+<h2>3. Comment as a speech bubble</h2>
+<p>The first three lines are always on screen. A longer comment ends in an ellipsis and expands on click, so a
+comment nobody opens is no longer a comment nobody reads. The tail points at the name of whoever wrote it.</p>
+<figure>
+  <img alt="Close-up of a comment bubble with its tail" src=".screenshots/comment-bubble-closeup.png">
+  <figcaption>Status caption sits to the right of the name; the bubble hangs under both.</figcaption>
+</figure>
+<figure>
+  <img alt="Review overlay with the comment expanded" src=".screenshots/review-overlay-comment-expanded.png">
+  <figcaption>Clicking the bubble expands it; clicking again folds it back.</figcaption>
+</figure>
+
+<h2>4. Counting</h2>
+<p>Only people count towards the gate. A validator reports on the content, it does not stand in for a reviewer,
+so its approval no longer moves the request towards <code>approved</code> and its rejection is still not a veto.</p>
+<ul>
+  <li>The people card counts <em>n of m approved</em>, people only.</li>
+  <li>The check card counts <em>n of m passed</em>, separately.</li>
+  <li>The timeline labels a passed check <em>Check passed</em> instead of numbering it <em>n of m</em>.</li>
+  <li>Every outstanding approval gets its own amber row, whatever the checks are doing.</li>
+</ul>
+<div class="note">
+  <strong>Config rename.</strong> <code>required_approvals</code> is now
+  <code>required_human_approvals</code>. The old name would have kept working while quietly meaning something
+  else, which is exactly the kind of change that should be loud. <code>reviewer</code> was not an option: in this
+  codebase a validator <em>is</em> a reviewer row, so <code>required_reviewer_approvals</code> would have been wrong.
+</div>
+
+<h2>5. No green text</h2>
+<p>The approval count was <code>$seaGreen</code>; it is <code>$charade</code> now, like every other count in the
+admin. Green survives only as the fill of an approved status circle. The rejection count stays
+<code>$cardinal</code> &mdash; say the word if that should go too.</p>
+
+<h2>6. Overlay height</h2>
+<p>Both overlays hug their content up to 436px and scroll past it, instead of always opening at a fixed 436px.</p>
+<figure>
+  <img alt="The reject step of the review overlay" src=".screenshots/review-overlay-reject-step.png">
+  <figcaption>The reject step shrinks to its textarea rather than padding out to full height.</figcaption>
+</figure>
+
+</main>
+</body>
+</html>

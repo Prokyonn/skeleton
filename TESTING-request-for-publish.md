@@ -42,7 +42,7 @@ are required before a request.
 ## 3. Simple case: one approval, no checks
 
 The `simple` workflow in `config/packages/sulu_content.yaml` is the simple case expressed as
-configuration: one approval, no prevalidators, no validators. It is selected by the template tag
+configuration: one approval, no pre-validators, no validators. It is selected by the template tag
 `sulu_content.request_workflow`, which `config/templates/pages/simple-review.xml` carries.
 
 1. `wf_author`: Pages > add page, template "Simple review", title and URL only, save as draft.

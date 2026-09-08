@@ -10,25 +10,24 @@ sulu_content:
             # keep publishing directly. Remove this key to have it apply to every resource.
             resources: ['pages', 'articles']
 
-            # Approvals needed before the request counts as approved. Validators count too: with the
-            # one validator below, three means the check plus two people. Self-review is not allowed,
-            # so those two are *other* users holding the `review` permission. Someone with the `live`
-            # permission can still take the "Bypass review and publish" route.
-            required_approvals: 3
-            #required_human_approvals
+            # People whose approval is needed before the request counts as approved. Validators do
+            # not count: they report on the content, they do not stand in for a reviewer. Self-review
+            # is not allowed, so these are *other* users holding the `review` permission. Someone with
+            # the `live` permission can still take the "Bypass review and publish" route.
+            required_human_approvals: 2
 
-            # Hard gates, checked synchronously while `request_for_review` is applied. A failing
-            # prevalidator aborts the transition, so no request is ever created and the author is told
-            # what to fix while the content is still editable. Use these for anything that must never
-            # be waved through.
-            prevalidators:
+            # Hard gates, checked synchronously on `request_for_review`, `publish` and
+            # `bypass_publish` alike. A failing pre-validator aborts the transition, so nothing is
+            # written and the author is told what to fix while the content is still editable. Use
+            # these for anything that must never be waved through, on any route to live.
+            pre_validators:
                 seo_required:
                     fields: ['title', 'description']
                 excerpt_required:
                     fields: ['title']
 
             # Checks that review like a person does, run over the message bus once the request exists.
-            # An approval counts towards `required_approvals`, a rejection is a comment that does not
+            # An approval counts towards `required_human_approvals`, a rejection is a comment that does not
             # count and blocks nothing, and a check that never answers blocks nothing either. Route
             # the message (see config/packages/messenger.yaml) to move them onto a worker, anything
             # doing I/O beyond the local database must be routed.
@@ -39,4 +38,4 @@ sulu_content:
         # `simple-review` template goes to one reviewer and is publishable as soon as that person
         # approves. Named workflows are selected by the template tag, not by resource.
         simple:
-            required_approvals: 1
+            required_human_approvals: 1
