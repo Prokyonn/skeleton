@@ -305,7 +305,7 @@ already say who and when, so four columns and two foreign keys went with it. The
   <tr><th>User</th><th>Holds</th><th><code>publish</code></th><th><code>bypass_publish</code></th></tr>
   <tr><td><code>wf_editor_no_review</code></td><td>view, edit</td><td class="no">403</td><td class="no">403</td></tr>
   <tr><td><code>wf_author</code> with an approved request</td><td>view, add, edit</td><td class="ok">200</td><td>&mdash;</td></tr>
-  <tr><td><code>wf_publisher</code></td><td>+ live, review</td><td class="ok">200</td><td class="ok">200</td></tr>
+  <tr><td><code>wf_publisher</code></td><td>view, add, edit, review, live</td><td class="ok">200</td><td class="ok">200</td></tr>
   <tr><td><code>sulu:page:initialize</code> (CLI)</td><td>no user at all</td><td colspan="2" class="ok">runs, unauthorized path skipped</td></tr>
 </table>
 <p>An approval delegates the publish right for that one request: <code>edit</code> is enough to carry out what the

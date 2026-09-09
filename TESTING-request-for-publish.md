@@ -34,7 +34,7 @@ symfony server:start -d
 > and will not convert them.
 
 Accounts (password `test`): `wf_author` (view, add, edit), `wf_reviewer_one` and `wf_reviewer_two`
-(view, edit, review), `wf_publisher` (+ live), `wf_editor_no_review` (view, edit).
+(view, edit, review), `wf_publisher` (view, add, edit, review, live), `wf_editor_no_review` (view, edit).
 
 The `default` workflow is configured with `required_human_approvals: 2` and one blocking check,
 `unpublished_references`. SEO title and description and the excerpt title are pre-validated.
