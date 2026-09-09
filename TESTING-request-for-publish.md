@@ -1,107 +1,126 @@
 # Test "Request for publish"
 
-This branch of the skeleton is wired for the `feature/workflow-transition-request` branch of `Prokyonn/sulu`:
-admin route import, workflow config, the `review` accounts command, a demo validator, a "Related pages"
-selection on the default page template, and a prebuilt admin bundle.
+This skeleton branch is wired to the `feature/workflow-transition-request` branch of `Prokyonn/sulu`
+so the review flow can be clicked through end to end.
 
-**The model in one paragraph.** People approve, checks report. The gate is
-`required_human_approvals`; an automated check never counts towards it. A check marked
-`blocking: true` holds the request until it passes. `live` publishes on its own authority and never
-has to ask; `edit` publishes only what reviewers signed off, and only from inside the review overlay.
+## The model
 
-## 1. Install
+- **People approve, checks report.** Only human approvals count towards `required_human_approvals`.
+- A check marked `blocking: true` holds the request until it passes, however many approvals are in.
+- **`live`** publishes on its own authority, with or without a request.
+- **`edit`** publishes only what reviewers signed off, and only from inside the review overlay.
+- **Pre-validators** are synchronous hard gates on every route to live. **Validators** run on the bus.
+
+## Setup
 
 ```bash
 git clone --branch feature/workflow-transition-request git@github.com:Prokyonn/skeleton.git wtr-test && cd wtr-test
-composer install
-```
-
-`composer.lock` is committed on this branch, so everyone installs the exact `sulu/sulu` commit this
-skeleton was built and tested against. After new sulu commits land, refresh it with
-`composer update sulu/sulu` and commit the result.
-
-Set `DATABASE_URL` in `.env.local`, then:
-
-```bash
+composer install                        # composer.lock is committed, so you get the tested sulu commit
+# set DATABASE_URL in .env.local
 bin/adminconsole sulu:build dev
 bin/adminconsole doctrine:migrations:migrate --no-interaction
 bin/adminconsole app:setup-review-users
 symfony server:start -d
 ```
 
-> Tested an earlier state of this branch? The tables were renamed. Drop `wt_workflow_transition_requests`
+> **Tested an earlier state of this branch?** The tables were renamed. Drop `wt_workflow_transition_requests`
 > and `wt_workflow_transition_request_reviewers` before migrating: the migration guards on `hasTable()`
 > and will not convert them.
 
-Accounts (password `test`): `wf_author` (view, add, edit), `wf_reviewer_one` and `wf_reviewer_two`
-(view, edit, review), `wf_publisher` (view, add, edit, review, live), `wf_editor_no_review` (view, edit).
+**Accounts**, password `test`:
 
-The `default` workflow is configured with `required_human_approvals: 2` and one blocking check,
-`unpublished_references`. SEO title and description and the excerpt title are pre-validated.
+| Account | Permissions | Its job in the tests |
+| --- | --- | --- |
+| `wf_author` | view, add, edit | Requests a publish, publishes it once approved |
+| `wf_reviewer_one`, `wf_reviewer_two` | view, edit, review | Approve and reject |
+| `wf_publisher` | view, add, edit, review, live | Publishes directly, bypasses a pending request |
+| `wf_editor_no_review` | view, edit | Sees the overlay read-only, may cancel |
 
-## 2. The main path
+**Configured workflows** (`config/packages/sulu_content.yaml`):
 
-1. `wf_author`: Pages > add page, save as draft. Save dropdown > "Save and request for publish" with empty SEO and excerpt. Expected: an overlay "Content is not ready to go live" listing every check as its own row, SEO fields red and Excerpt fields green (or both red) with "1 of 2 passed" in the header. Nothing was written: no request exists and the form is still editable.
-2. `wf_author`: fill SEO title, SEO description, excerpt title; in "Related pages" select a page that is only a draft. "Save and request for publish". Expected: form locked, yellow banner with "Cancel request for publish", yellow header dot.
-3. `wf_author`: the toolbar now shows a single **Review** button, not a dropdown. Open it. Expected: two cards — "Automated checks" with `unpublished_references` and "0 of 2 approved" below it; the check row is red and reads "Must pass before publishing" with the unpublished page named in a speech bubble. No Approve or Reject: you cannot review your own request. A **Retry** link is offered, because clearing a failed check is the author's job.
-4. `wf_publisher`: publish the related page that was only a draft. `wf_author`: Review > Retry. Expected: the check turns green and reads "Passed", header "1 of 1 passed".
-5. `wf_reviewer_one`: open the page > Review. Expected: Reject and Approve enabled. Approve with a comment. Expected: overlay stays open, "1 of 2 approved", Approve now disabled as "You approved", the comment shown as a speech bubble clamped to three lines.
-6. `wf_reviewer_one`: Reject. Expected: Send disabled until a comment is typed. Send. Expected: "0 of 2 approved, 1 rejected". Approve again. Expected: "1 of 2 approved".
-7. `wf_reviewer_two`: Approve. Expected: "2 of 2 approved" and the banner turns "Ready to Publish".
-8. `wf_author`: Review. Expected: **Publish** in the overlay footer, and still no Approve or Reject. Click it. Expected: page live, request closed, banner gone. This is the point of the whole flow: the approval delegated the publish right to the author, who holds no `live`.
-9. `wf_editor_no_review`: open a page with an open request. Expected: the Review button opens the overlay read-only — no Approve, no Reject, no Publish — but "Cancel request for publish" in the banner works, since withdrawing takes `edit`.
+| Workflow | Applies to | Approvals | Pre-validators | Validators |
+| --- | --- | --- | --- | --- |
+| `default` | pages, articles | 2 | `seo_required`, `excerpt_required` | `unpublished_references` (blocking) |
+| `simple` | templates carrying the tag | 1 | none | none |
 
-## 3. Publishing without a review
+## A. Main path
 
-10. `wf_publisher` on a page with **no** open request: change the title. Save dropdown. Expected: "Save as draft", "Save and request for publish", "Save and publish" and "Publish". The last two go live directly; `live` is never forced through a review.
-11. `wf_author` on the same page: Save dropdown shows only "Save as draft" and "Save and request for publish". No publish route.
-12. `wf_publisher` on a page with a **pending** request: Review > footer offers **"Bypass review and publish"**. Confirm. Expected: published without the approvals, and the request recorded as `Published`.
+Author requests, two reviewers approve, the author publishes without holding `live`.
 
-## 4. The blocking check
+| # | As | Do | Expect |
+| --- | --- | --- | --- |
+| 1 | `wf_author` | Add a page, save as draft, then "Save and request for publish" with SEO and excerpt empty | Overlay "Content is not ready to go live", one row per check, "1 of 2 passed". No request written, form still editable |
+| 2 | `wf_author` | Fill SEO title, SEO description, excerpt title. Relate a draft-only page. Request again | Form locked, yellow banner with "Cancel request for publish", yellow header dot |
+| 3 | `wf_author` | Open the **Review** button (one button now, not a dropdown) | Two cards: "Automated checks" with a red `unpublished_references` reading "Must pass before publishing", and "0 of 2 approved". No Approve or Reject, but a **Retry** link |
+| 4 | `wf_publisher`, then `wf_author` | Publish the related page, then Review > Retry | Check turns green, "Passed", "1 of 1 passed" |
+| 5 | `wf_reviewer_one` | Review > Approve with a comment | Overlay stays open, "1 of 2 approved", Approve disabled as "You approved", comment in a speech bubble clamped to three lines |
+| 6 | `wf_reviewer_one` | Reject, then approve again | Send stays disabled until a comment is typed. "0 of 2 approved, 1 rejected", then "1 of 2 approved" |
+| 7 | `wf_reviewer_two` | Approve | "2 of 2 approved", banner turns "Ready to Publish" |
+| 8 | `wf_author` | Review > **Publish** (in the overlay footer) | Page live, request closed, banner gone |
+| 9 | `wf_editor_no_review` | Open a page with an open request | Overlay read-only: no Approve, Reject or Publish. "Cancel request for publish" still works |
 
-13. Make `unpublished_references` fail again (relate an unpublished page) on a request that already has both approvals. Expected: "2 of 2 approved" **and** the request still `Pending`, because a blocking check that has not passed holds it. The check row says "Must pass before publishing".
-14. Set `blocking: false` for that validator in `config/packages/sulu_content.yaml` and repeat. Expected: the same failure is now informational and the request reaches `Approved`. Note that the flag is snapshotted when the request is created, so change it before requesting.
+> Step 8 is the point of the whole flow: the approvals delegated the publish right to an author who
+> holds no `live`. Step 9 is the other half: cancelling is not a verdict, so it takes `edit`.
 
-## 5. Simple case: one approval, no checks
+## B. Publishing without a review
 
-The `simple` workflow in `config/packages/sulu_content.yaml` is the simple case expressed as
-configuration: one approval, no pre-validators, no validators. It is selected by the template tag
-`sulu_content.request_workflow`, which `config/templates/pages/simple-review.xml` carries.
+| # | As | Do | Expect |
+| --- | --- | --- | --- |
+| 10 | `wf_publisher` | Page with **no** request: change the title, open the Save dropdown | Four entries: "Save as draft", "Save and request for publish", "Save and publish", "Publish". The last two go live directly |
+| 11 | `wf_author` | Same page, Save dropdown | Only "Save as draft" and "Save and request for publish". No publish route |
+| 12 | `wf_publisher` | Page with a **pending** request: Review > "Bypass review and publish" | Published without the approvals, request recorded as `Published` |
 
-15. `wf_author`: Pages > add page, template "Simple review", title and URL only, save as draft.
-16. `wf_author`: "Save and request for publish". Expected: no pre-validation overlay, form locked at once.
-17. `wf_reviewer_one`: Review. Expected: no "Automated checks" card at all, "0 of 1 approved", one "Approval is waiting". Approve. Expected: "1 of 1 approved", banner "Ready to Publish".
-18. `wf_author`: Review > Publish. Expected: page live.
+## C. The blocking check
 
-## 6. Requests for publishing (Insights)
+| # | Do | Expect |
+| --- | --- | --- |
+| 13 | Relate an unpublished page on a request that already has both approvals | "2 of 2 approved" **and** still `Pending`. The row reads "Must pass before publishing" |
+| 14 | Set `blocking: false` for that validator, then request again | The same failure is now informational, the request reaches `Approved` |
 
-The Insights tab of a page, article or snippet carries a third sub-tab listing every request ever
-made for that content in that locale, newest first, not just the open one.
+> The flag is snapshotted onto the check when the request is created, so change it before requesting.
+> `required_human_approvals: 0` is refused at container build unless a validator is `blocking: true`,
+> since it would otherwise approve every request on arrival.
 
-19. `wf_author`: open a page that by now has a cancelled and a closed request > Insights > "Requests for Publishing". Expected: the tab sits after Versions and Activity; a flat table with Requester and Status, newest on top.
-20. Statuses are the four the backend really has: `Pending`, `Approved`, `Cancelled`, `Published`. A bypassed publish is recorded as `Published`, because `bypass_publish` closes the request through the same subscriber as a normal publish.
-21. Hover a row and click the ⓘ at its start. Expected: the Review overlay opens read-only for that request, showing its checks, approvals and comments, with no buttons even on a closed request.
-22. Switch the locale chooser. Expected: only the requests of the selected locale are listed.
-23. Open an article or a snippet that has a request. Expected: the same tab, because all three are built by the same shared factory.
+## D. Simple workflow: one approval, no checks
 
-## 7. Optional: validator on a worker
+Selected by the template tag `sulu_content.request_workflow`, which `config/templates/pages/simple-review.xml` carries.
 
-Uncomment the routing line in `config/packages/messenger.yaml`, then:
+| # | As | Do | Expect |
+| --- | --- | --- | --- |
+| 15 | `wf_author` | Add a page with template "Simple review", title and URL only, save as draft | Saves like any other page |
+| 16 | `wf_author` | "Save and request for publish" | No pre-validation overlay, form locked at once |
+| 17 | `wf_reviewer_one` | Review > Approve | No "Automated checks" card at all. "0 of 1 approved" then "1 of 1 approved", banner "Ready to Publish" |
+| 18 | `wf_author` | Review > Publish | Page live |
+
+## E. Requests list (Insights)
+
+A third Insights sub-tab lists every request ever made for that content in that locale, not just the open one.
+
+| # | Do | Expect |
+| --- | --- | --- |
+| 19 | Open a page with a cancelled and a closed request > Insights > "Requests for Publishing" | Tab sits after Versions and Activity. Flat table, Requester and Status, newest first |
+| 20 | Read the statuses | Only the four the backend has: `Pending`, `Approved`, `Cancelled`, `Published`. A bypass is recorded as `Published` |
+| 21 | Hover a row, click the ⓘ | Review overlay opens read-only, with checks, approvals and comments, no buttons |
+| 22 | Switch the locale chooser | Only the selected locale's requests are listed |
+| 23 | Open an article or snippet that has a request | The same tab, built by the same shared factory |
+
+## Optional: run a validator on a worker
 
 ```bash
+# uncomment the routing line in config/packages/messenger.yaml first
 bin/adminconsole messenger:setup-transports
 bin/adminconsole messenger:consume async -vv
 ```
 
-Without a worker the check stays "Has not answered yet"; Retry re-queues it. This is why validators
-are asynchronous and pre-validators are not: a pre-validator's result is rendered in an overlay in the
-same request, so it has to be fast.
+Without a worker the check stays "Has not answered yet" and Retry re-queues it. This is why validators
+may be asynchronous and pre-validators may not: a pre-validator's result is rendered in an overlay in
+the same request.
 
-## 8. Known gaps
+## Known gaps
 
-- Request action appears after the first save only.
+- The request action appears after the first save only.
 - `resources` works on the `default` workflow only.
-- The "Requests for Publishing" tab is shown on every page, article and snippet, also where no review workflow applies, and is then empty.
-- The Figma mock shows a `Bypassed` status; there is no such status, a bypass is recorded as `Published`.
+- The "Requests for Publishing" tab shows on every page, article and snippet, and is empty where no workflow applies.
+- The Figma mock shows a `Bypassed` status. There is none, a bypass is recorded as `Published`.
 - A blocking check whose validator is no longer registered fails permanently: retry cannot pass it, so the request has to be cancelled or the config fixed.
-- Rejection is a vote, not a hand-back: the content stays locked until someone cancels the request.
+- Rejection is a vote, not a hand-back: the content stays locked until someone cancels.
