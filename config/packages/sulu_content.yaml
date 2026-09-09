@@ -26,13 +26,16 @@ sulu_content:
                 excerpt_required:
                     fields: ['title']
 
-            # Checks that review like a person does, run over the message bus once the request exists.
-            # An approval counts towards `required_human_approvals`, a rejection is a comment that does not
-            # count and blocks nothing, and a check that never answers blocks nothing either. Route
-            # the message (see config/packages/messenger.yaml) to move them onto a worker, anything
-            # doing I/O beyond the local database must be routed.
+            # Automated checks, run over the message bus once the request exists, so a slow one (an
+            # LLM, a remote service) does not hold up the request. They never count towards
+            # `required_human_approvals`: a check reports on the content, it does not stand in for a
+            # reviewer. `blocking: true` makes a failure hold the request until the check passes,
+            # which is the exception; by default a check is informational. Route the message (see
+            # config/packages/messenger.yaml) to move them onto a worker, anything doing I/O beyond
+            # the local database must be routed.
             validators:
-                unpublished_references: ~
+                unpublished_references:
+                    blocking: true
 
         # The "simple case": one approval, no automated checks, no hard gates. A page using the
         # `simple-review` template goes to one reviewer and is publishable as soon as that person

@@ -3,86 +3,106 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Request for publish &mdash; overlay designs</title>
+<title>Request for publish &mdash; walkthrough and design</title>
 <style>
   :root {
-    --charade: #2e3036;
-    --raven: #73757d;
-    --iron: #e2e3e5;
-    --zircon: #f6f8fa;
-    --seagreen: #2da44e;
-    --cardinal: #cf222e;
-    --hokeypokey: #d4a72c;
-    --silver: #ccc;
-    --shakespeare: #52b6ca;
+    --ink: #353535;
+    --muted: #6e6e6e;
+    --line: #e6e6e6;
+    --bg: #fafafa;
+    --green: #6ac86b;
+    --red: #cf3939;
+    --amber: #f8d200;
+    --grey: #ccc;
+    --blue: #52b6ca;
   }
   * { box-sizing: border-box; }
   body {
-    background: var(--zircon);
-    color: var(--charade);
+    background: var(--bg);
+    color: var(--ink);
     font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 48px 24px 96px;
   }
-  main { margin: 0 auto; max-width: 1080px; }
-  h1 { font-size: 30px; letter-spacing: -.01em; margin: 0 0 8px; }
+  main { margin: 0 auto; max-width: 1100px; }
+  h1 { font-size: 30px; letter-spacing: -.01em; margin: 0 0 6px; }
   h2 {
-    border-bottom: 1px solid var(--iron);
+    border-bottom: 1px solid var(--line);
     font-size: 21px;
-    margin: 56px 0 4px;
+    margin: 60px 0 4px;
     padding-bottom: 10px;
   }
-  h3 { font-size: 15px; margin: 28px 0 8px; }
+  h3 { font-size: 16px; margin: 32px 0 6px; }
   p { margin: 12px 0; }
-  .lede { color: var(--raven); margin-bottom: 4px; }
-  .meta { color: var(--raven); font-size: 13px; }
+  .lede { color: var(--muted); font-size: 16px; }
+  .meta { color: var(--muted); font-size: 13px; }
   figure {
     background: #fff;
-    border: 1px solid var(--iron);
+    border: 1px solid var(--line);
     border-radius: 8px;
-    margin: 16px 0 0;
+    margin: 14px 0 0;
     overflow: hidden;
   }
   figure img { display: block; width: 100%; }
   figcaption {
-    background: var(--zircon);
-    border-top: 1px solid var(--iron);
-    color: var(--raven);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    color: var(--muted);
     font-size: 13px;
     padding: 10px 14px;
   }
-  .pair { display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
-  @media (max-width: 820px) { .pair { grid-template-columns: 1fr; } }
-  .tag {
-    border-radius: 20px;
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: .02em;
-    margin-right: 6px;
-    padding: 2px 10px;
-    text-transform: uppercase;
+  .step {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin: 22px 0;
+    padding: 20px 22px;
   }
-  .tag-before { background: #fdecee; color: var(--cardinal); }
-  .tag-after { background: #e7f6ec; color: var(--seagreen); }
+  .step > h3 { margin-top: 0; }
+  .num {
+    background: var(--ink);
+    border-radius: 50%;
+    color: #fff;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    height: 24px;
+    line-height: 24px;
+    margin-right: 10px;
+    text-align: center;
+    width: 24px;
+  }
   ul { margin: 12px 0; padding-left: 22px; }
   li { margin: 5px 0; }
   code {
-    background: var(--zircon);
-    border: 1px solid var(--iron);
+    background: var(--bg);
+    border: 1px solid var(--line);
     border-radius: 4px;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 13px;
     padding: 1px 5px;
   }
+  pre {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin: 12px 0;
+    overflow-x: auto;
+    padding: 14px 16px;
+  }
   table { border-collapse: collapse; margin: 16px 0; width: 100%; }
   th, td {
-    border-bottom: 1px solid var(--iron);
+    border-bottom: 1px solid var(--line);
     padding: 9px 12px;
     text-align: left;
     vertical-align: top;
   }
-  th { color: var(--raven); font-size: 13px; font-weight: 600; }
+  th { color: var(--muted); font-size: 13px; font-weight: 600; }
+  .ok { color: #2f7d32; font-weight: 600; }
+  .no { color: var(--red); font-weight: 600; }
   .swatch {
     border-radius: 50%;
     display: inline-block;
@@ -91,111 +111,263 @@
     vertical-align: -2px;
     width: 14px;
   }
-  .s-approved { background: var(--seagreen); }
-  .s-rejected { background: var(--cardinal); }
-  .s-pending { border: 2px solid var(--silver); }
-  .s-waiting { border: 2px solid var(--hokeypokey); }
+  .s-pass { background: var(--green); }
+  .s-fail { background: var(--red); }
+  .s-pending { background: #e6e6e6; }
+  .s-waiting { background: var(--amber); }
   .note {
     background: #fffbe9;
     border: 1px solid #f0e2ae;
     border-radius: 6px;
     font-size: 14px;
+    margin: 16px 0;
     padding: 12px 16px;
+  }
+  .gate { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+  .gate span {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    font-size: 13px;
+    padding: 4px 12px;
   }
 </style>
 </head>
 <body>
 <main>
 
-<h1>Request for publish &mdash; overlay designs</h1>
-<p class="lede">Screenshots taken from the running skeleton at <code>https://127.0.0.1:8124/admin/</code>, branch
-<code>feature/workflow-transition-request</code>.</p>
-<p class="meta">Both overlays share one component, <code>WorkflowCheckCard</code>, so a change to a row lands in both.</p>
+<h1>Request for publish</h1>
+<p class="lede">Every path walked in the running admin, plus what changed in the domain model.</p>
+<p class="meta">Skeleton at <code>https://127.0.0.1:8124/admin/</code>, branch <code>feature/workflow-transition-request</code>.
+Screenshots are the real app, not mockups.</p>
 
-<h2>1. Pre-validation overlay</h2>
-<p>Opens whenever a pre-validator blocks a transition &mdash; on <code>request_for_review</code>,
-on <code>publish</code> and on <code>bypass_publish</code> alike. Every configured check gets its own row,
-the passed ones included, so the author reads what is already done as well as what is left.</p>
-<figure>
-  <img alt="Pre-validation overlay with one failed and one passed check" src=".screenshots/prevalidation-overlay.png">
-  <figcaption>Nothing was written: the content stays editable and no request was created.</figcaption>
-</figure>
+<h2>The model, in one paragraph</h2>
+<p>A request collects two different things and no longer pretends they are the same. <strong>People approve</strong>
+&mdash; their count is the gate, set by <code>required_human_approvals</code>. <strong>Checks report</strong> &mdash;
+they run over the message bus so a slow one (an LLM, a remote service) does not hold the request open, and they never
+count as an approval. A check marked <code>blocking: true</code> holds the request until it passes; by default a check
+is informational.</p>
 
-<h2>2. Review overlay &mdash; two sections</h2>
-<p>Automated checks and people are two cards now. The check card is omitted entirely when the workflow
-configures no validators, so a simple workflow looks exactly as it did before.</p>
-<div class="pair">
-  <figure>
-    <img alt="Old review overlay, single card" src=".screenshots/before-review-overlay.png">
-    <figcaption><span class="tag tag-before">before</span> one card, checks and people mixed, green count,
-      comment folded behind a chevron</figcaption>
-  </figure>
-  <figure>
-    <img alt="New review overlay with two sections" src=".screenshots/review-overlay-sections.png">
-    <figcaption><span class="tag tag-after">after</span> checks first, then people; counts in normal text;
-      comment visible</figcaption>
-  </figure>
+<div class="gate">
+  <span>status = <strong>approved</strong> when</span>
+  <span>human approvals &ge; required</span>
+  <span>and</span>
+  <span>no blocking check is unpassed</span>
 </div>
 
-<h3>Row states</h3>
+<h3>Two entities instead of one</h3>
+<p>The old single <code>WorkflowTransitionRequestReviewer</code> row carried a person <em>or</em> a validator behind two
+nullable columns and an <code>isValidator()</code> branch in seven places. It is now two:</p>
 <table>
-  <tr><th>Marker</th><th>State</th><th>Used for</th></tr>
-  <tr><td><span class="swatch s-approved"></span></td><td>approved</td>
-      <td>a check that passed, a person who approved</td></tr>
-  <tr><td><span class="swatch s-rejected"></span></td><td>rejected</td>
-      <td>a check that reported a problem, a person who rejected</td></tr>
-  <tr><td><span class="swatch s-pending"></span></td><td>pending (grey)</td>
-      <td>a check that has not answered yet</td></tr>
-  <tr><td><span class="swatch s-waiting"></span></td><td>waiting (amber)</td>
-      <td>an approval no person has given yet</td></tr>
+  <tr><th></th><th><code>WorkflowTransitionRequestApproval</code></th><th><code>WorkflowTransitionRequestCheck</code></th></tr>
+  <tr><td>identity</td><td><code>user</code> (required)</td><td><code>validatorKey</code> (required)</td></tr>
+  <tr><td>states</td><td>approved / rejected</td><td>pending / passed / failed</td></tr>
+  <tr><td>gate</td><td>counts towards the gate</td><td><code>blocking</code> decides</td></tr>
+  <tr><td>row exists</td><td>once the person decided</td><td>from the moment the request is made</td></tr>
+</table>
+<p>Both dropped <code>AuditableTrait</code>: <code>user</code>/<code>validatorKey</code> and <code>decidedAt</code>
+already say who and when, so four columns and two foreign keys went with it. The request itself dropped
+<code>requestedAt</code>, which duplicated <code>created</code>. Tables moved from <code>wt_*</code> to
+<code>ct_*</code>.</p>
+
+<div class="note">
+  <strong>Prefix note.</strong> <code>co_</code> was the obvious guess for "content" and is wrong &mdash; it is already
+  the ContactBundle's prefix (<code>co_contacts</code>, <code>co_accounts</code>). Caught it when the schema update put
+  the new tables next to the contact ones. <code>ct_</code> is free.
+</div>
+
+<h3>The API payload follows</h3>
+<pre>{
+  "status": "pending",
+  "approvalProgress": { "required": 2, "approved": 1, "rejected": 0 },
+  "checks":    [ { "validatorKey": "unpublished_references", "blocking": true, "status": "passed", ... } ],
+  "approvals": [ { "reviewer": { "fullName": "Reviewer_one Workflow" }, "status": "approved", ... } ]
+}</pre>
+<p>One list with a <code>type</code> discriminator became two, which is what the admin was already rendering.</p>
+
+<h2>Row states</h2>
+<table>
+  <tr><th>Marker</th><th>State</th><th>Meaning</th></tr>
+  <tr><td><span class="swatch s-pass"></span></td><td>passed / approved</td><td>a check passed, or a person approved</td></tr>
+  <tr><td><span class="swatch s-fail"></span></td><td>failed / rejected</td><td>a check reported a problem, or a person rejected</td></tr>
+  <tr><td><span class="swatch s-pending"></span></td><td>pending (grey)</td><td>a check has not answered yet</td></tr>
+  <tr><td><span class="swatch s-waiting"></span></td><td>waiting (amber)</td><td>an approval no person has given yet</td></tr>
 </table>
 <p>A check never borrows a person's wording: it reads <em>Passed</em>, <em>Reported a problem</em> or
-<em>Has not answered yet</em> rather than <em>Approved these changes</em>.</p>
-<figure>
-  <img alt="Review overlay with a pending check in grey" src=".screenshots/review-overlay-pending-check.png">
-  <figcaption>A pending check is grey and offers <em>Retry</em>; the outstanding approvals below it stay amber,
-    because those wait on a person.</figcaption>
-</figure>
+<em>Has not answered yet</em>, not <em>Approved these changes</em>. A check that is holding the request says
+<em>Must pass before publishing</em>, so a reader never has to work out which one is in the way.</p>
 
-<h2>3. Comment as a speech bubble</h2>
-<p>The first three lines are always on screen. A longer comment ends in an ellipsis and expands on click, so a
-comment nobody opens is no longer a comment nobody reads. The tail points at the name of whoever wrote it.</p>
-<figure>
-  <img alt="Close-up of a comment bubble with its tail" src=".screenshots/comment-bubble-closeup.png">
-  <figcaption>Status caption sits to the right of the name; the bubble hangs under both.</figcaption>
-</figure>
-<figure>
-  <img alt="Review overlay with the comment expanded" src=".screenshots/review-overlay-comment-expanded.png">
-  <figcaption>Clicking the bubble expands it; clicking again folds it back.</figcaption>
-</figure>
+<h2>The walkthrough</h2>
 
-<h2>4. Counting</h2>
-<p>Only people count towards the gate. A validator reports on the content, it does not stand in for a reviewer,
-so its approval no longer moves the request towards <code>approved</code> and its rejection is still not a veto.</p>
-<ul>
-  <li>The people card counts <em>n of m approved</em>, people only.</li>
-  <li>The check card counts <em>n of m passed</em>, separately.</li>
-  <li>The timeline labels a passed check <em>Check passed</em> instead of numbering it <em>n of m</em>.</li>
-  <li>Every outstanding approval gets its own amber row, whatever the checks are doing.</li>
-</ul>
-<div class="note">
-  <strong>Config rename.</strong> <code>required_approvals</code> is now
-  <code>required_human_approvals</code>. The old name would have kept working while quietly meaning something
-  else, which is exactly the kind of change that should be loud. <code>reviewer</code> was not an option: in this
-  codebase a validator <em>is</em> a reviewer row, so <code>required_reviewer_approvals</code> would have been wrong.
+<div class="step">
+  <h3><span class="num">1</span>Pre-validators block before anything is written</h3>
+  <p>SEO emptied, then "Save and request for publish". Every configured check gets a row, the passed one included.
+  Nothing was written: no request exists and the form stays editable.</p>
+  <figure>
+    <img alt="Pre-validation overlay, one failed one passed" src=".screenshots/step-1-prevalidation.png">
+    <figcaption>Also fires on <code>publish</code> and <code>bypass_publish</code>, so publishing cannot walk around it.</figcaption>
+  </figure>
 </div>
 
-<h2>5. No green text</h2>
-<p>The approval count was <code>$seaGreen</code>; it is <code>$charade</code> now, like every other count in the
-admin. Green survives only as the fill of an approved status circle. The rejection count stays
-<code>$cardinal</code> &mdash; say the word if that should go too.</p>
+<div class="step">
+  <h3><span class="num">2</span>SEO restored, request created</h3>
+  <p>The form locks, the banner offers to withdraw. Server state:
+  <code>place: review_draft</code>, <code>status: pending</code>, one check already <code>passed</code>,
+  <code>approvals: []</code>, gate <code>2</code>.</p>
+  <figure>
+    <img alt="Form locked with the in-review banner" src=".screenshots/step-2-requested.png">
+    <figcaption>The overwrite dialog appears because step 1 had saved the draft before the transition aborted.</figcaption>
+  </figure>
+</div>
 
-<h2>6. Overlay height</h2>
-<p>Both overlays hug their content up to 436px and scroll past it, instead of always opening at a fixed 436px.</p>
+<div class="step">
+  <h3><span class="num">3</span>The overlay, two sections</h3>
+  <p>Automated checks first, then the people. The author sees the notice instead of buttons &mdash; you cannot review
+  your own request.</p>
+  <figure>
+    <img alt="Review overlay with checks and approvals as two cards" src=".screenshots/step-3-review-sections.png">
+    <figcaption>"0 of 2 approved" counts people only; the check reports separately as "1 of 1 passed".</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">4</span>A reviewer can act</h3>
+  <figure>
+    <img alt="Reviewer sees Approve and Reject" src=".screenshots/step-4-reviewer-can-act.png">
+    <figcaption>Same overlay, different viewer: Reject and Approve are enabled.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">5</span>Approving with a comment</h3>
+  <figure>
+    <img alt="The comment step" src=".screenshots/step-5-approve-comment.png">
+    <figcaption>The step shrinks to its textarea rather than padding out to a fixed height.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">6</span>First approval, comment as a speech bubble</h3>
+  <p>The first three lines are always visible; a longer comment ends in an ellipsis and expands on click. The tail
+  points at the name of whoever wrote it, and the status caption sits beside the name.</p>
+  <figure>
+    <img alt="One approval recorded with its comment" src=".screenshots/step-6-one-approved.png">
+    <figcaption>"1 of 2 approved". One amber row remains for the approval still outstanding.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">7</span>Second approval reaches the gate</h3>
+  <figure>
+    <img alt="Both approvals in" src=".screenshots/step-7-approved.png">
+    <figcaption><code>status: approved</code>, progress <code>2 of 2</code>.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">8</span>A failing blocking check pulls it back</h3>
+  <p>The new <code>blocking</code> flag, proven: both people have approved, and the request is still
+  <strong>pending</strong> because the blocking check failed. Before this change a validator's rejection did nothing at
+  all.</p>
+  <figure>
+    <img alt="Failed blocking check holding an otherwise approved request" src=".screenshots/step-8-blocking-check-failed.png">
+    <figcaption>The blocking check says so on its own row &mdash; "Must pass before publishing" &mdash; so the reader never has to guess which check is holding the request.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">9</span>Check passes, ready to publish</h3>
+  <figure>
+    <img alt="Ready to publish banner" src=".screenshots/step-9-ready-to-publish.png">
+    <figcaption>The banner flips to "Ready to Publish" and Publish becomes available; Bypass greys out.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">10</span>Published</h3>
+  <figure>
+    <img alt="The page after publishing" src=".screenshots/step-10-published.png">
+    <figcaption>Request closed, <code>active_key</code> nulled, so the next request is free to be made.</figcaption>
+  </figure>
+</div>
+
+<div class="step">
+  <h3><span class="num">11</span>The history stays</h3>
+  <figure>
+    <img alt="Requests for Publishing list under Insights" src=".screenshots/step-11-requests-list.png">
+    <figcaption>Both requests for this page and locale, newest first, each with its requester and final status.</figcaption>
+  </figure>
+</div>
+
+<h2>Permissions, exercised against the live API</h2>
+<p>Not asserted in a test &mdash; actually called, each as a different logged-in user.</p>
+<table>
+  <tr><th>User</th><th>Holds</th><th><code>publish</code></th><th><code>bypass_publish</code></th></tr>
+  <tr><td><code>wf_editor_no_review</code></td><td>view, edit</td><td class="no">403</td><td class="no">403</td></tr>
+  <tr><td><code>wf_author</code> with an approved request</td><td>view, add, edit</td><td class="ok">200</td><td>&mdash;</td></tr>
+  <tr><td><code>wf_publisher</code></td><td>+ live, review</td><td class="ok">200</td><td class="ok">200</td></tr>
+  <tr><td><code>sulu:page:initialize</code> (CLI)</td><td>no user at all</td><td colspan="2" class="ok">runs, unauthorized path skipped</td></tr>
+</table>
+<p>An approval delegates the publish right for that one request: <code>edit</code> is enough to carry out what the
+reviewers signed off, and only while that approved request is the active one. The same user without a request is
+refused.</p>
+
+<h2>Who may do what</h2>
+<table>
+  <tr><th>Action</th><th>Permission</th><th>Why</th></tr>
+  <tr><td>Request for publish</td><td><code>edit</code></td><td>it is a save with an ask attached</td></tr>
+  <tr><td>Withdraw the request</td><td><code>edit</code></td><td>frees the content for editing again</td></tr>
+  <tr><td>Re-run a failed check</td><td><code>edit</code></td><td>not a verdict &mdash; it is how the author clears a check after fixing the content</td></tr>
+  <tr><td>Approve / reject</td><td><code>review</code></td><td>a verdict on someone else's work</td></tr>
+  <tr><td>Publish an approved request</td><td><code>edit</code></td><td>the approval delegates the right for that one request</td></tr>
+  <tr><td>Publish without a request, or past one</td><td><code>live</code></td><td>publishing on your own authority</td></tr>
+</table>
+<p>The <code>live</code> holder is never forced through the review: on content that has a workflow but no open
+request, the Save dropdown still offers <strong>Publish</strong> and <strong>Save and publish</strong>. Those send
+<code>bypass_publish</code> rather than <code>publish</code>, because plain <code>publish</code> is guarded on an
+approved request &mdash; same button, honest transition underneath.</p>
 <figure>
-  <img alt="The reject step of the review overlay" src=".screenshots/review-overlay-reject-step.png">
-  <figcaption>The reject step shrinks to its textarea rather than padding out to full height.</figcaption>
+  <img alt="The live user's save dropdown on workflow content with no request" src=".screenshots/step-13-live-publish-no-request.png">
+  <figcaption>An author on the same page sees only <em>Save as draft</em> and <em>Save and request for publish</em>.</figcaption>
 </figure>
+<p>Retry sitting with <code>edit</code> matters: a blocking check that failed holds the request, and the person
+who can fix the content is the author, who by definition may not review their own request. Before this it took a
+reviewer to clear it.</p>
+<figure>
+  <img alt="The author's review overlay: Retry offered, no decision buttons" src=".screenshots/step-12-author-retry.png">
+  <figcaption>The author, who holds <code>edit</code> but not <code>review</code>: the overlay opens and offers
+    <em>Retry</em>, the decision buttons stay away, and the self-review notice explains why.</figcaption>
+</figure>
+
+<h2>One button while a request is open</h2>
+<p>Everything you can do to an open request happens inside the overlay, so the toolbar shows a single
+<strong>Review</strong> button rather than a dropdown of half-disabled entries. Publishing an approved request
+and publishing past an unfinished one are buttons in the overlay's footer.</p>
+<p>This is what the dropdown was hiding: those entries were gated on <code>live</code>, so an editor whose
+request had been approved &mdash; the person the approval was granted to &mdash; had no way to publish it in the
+UI at all, even though the server allowed it.</p>
+<figure>
+  <img alt="The author's overlay with a Publish button in the footer" src=".screenshots/step-14-editor-publishes-in-overlay.png">
+  <figcaption>The author holds only <code>edit</code>: no Approve or Reject, but <em>Publish</em>, because two
+    reviewers signed the request off. Clicking it took the page live and closed the request.</figcaption>
+</figure>
+
+<h2>Also in this pass</h2>
+<ul>
+  <li><strong>Authorization moved out of the controllers</strong> into the three <code>ApplyWorkflowTransition*</code>
+    message handlers, so every caller of the bus is covered rather than only the HTTP entry point.</li>
+  <li><strong>Nine colour variables deleted.</strong> The branch had added its own red, green, amber and three greys
+    next to Sulu's existing ones; they now map onto the palette that was already there.</li>
+  <li><strong>One "active request" lookup</strong> instead of seven hand-written copies of the same filter.</li>
+  <li><strong>An N+1 fixed</strong> in the requests list: checks and approvals preload in one query.</li>
+  <li><strong>Application stopped translating.</strong> Pre-validation messages travel as keys and are rendered by the
+    serializer, which is the only layer that knows the request's locale.</li>
+  <li><strong><code>UPGRADE-3.x.md</code> pruned</strong> of renames that only ever existed inside this branch.</li>
+</ul>
+
+<h2>Verified</h2>
+<p>719 PHP unit tests, 472 jest tests, eslint, flow, stylelint and dependency-cruiser all pass. Every screenshot above
+is a real state of the running app, and the permission table is live HTTP responses.</p>
 
 </main>
 </body>

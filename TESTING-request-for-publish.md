@@ -61,7 +61,7 @@ made for that content in that locale, newest first, not just the open one.
 
 1. `wf_author`: take the page from section 2, which by then has one cancelled and one closed request. Open it > Insights > "Requests for Publishing". Expected: tab sits after Versions and Activity; a flat table with Requester and Status, newest request on top.
 2. Statuses are the four the backend really has: `Pending`, `Approved`, `Cancelled`, `Published`. A bypassed publish is recorded as `Published`, because `bypass_publish` closes the request through the same subscriber as a normal publish.
-3. Hover a row and click the ⓘ at its start. Expected: the Review overlay opens read-only for that request, showing its reviewers and comments, with no Approve/Reject buttons even on a closed request.
+3. Hover a row and click the ⓘ at its start. Expected: the Review overlay opens read-only for that request, showing its approvals and checks and comments, with no Approve/Reject buttons even on a closed request.
 4. Switch the locale chooser. Expected: only the requests of the selected locale are listed.
 5. Open an article or a snippet that has a request. Expected: the same tab, because all three are built by the same shared factory.
 6. `wf_editor_no_review`: open a page with requests. Expected: the tab is readable, since it needs only the `view` permission the form already requires.
