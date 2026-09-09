@@ -16,6 +16,10 @@ git clone --branch feature/workflow-transition-request git@github.com:Prokyonn/s
 composer install
 ```
 
+`composer.lock` is committed on this branch, so everyone installs the exact `sulu/sulu` commit this
+skeleton was built and tested against. After new sulu commits land, refresh it with
+`composer update sulu/sulu` and commit the result.
+
 Set `DATABASE_URL` in `.env.local`, then:
 
 ```bash

@@ -23,7 +23,8 @@
 
 # composer
 /composer.phar
-composer.lock
+# composer.lock is committed on this branch: sulu/sulu is required as a dev- branch, so without a lock
+# every install resolves to whatever the branch tip happens to be and two people test different code.
 
 # npm
 package-lock.json
