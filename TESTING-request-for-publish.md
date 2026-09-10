@@ -80,6 +80,8 @@ Author requests, two reviewers approve, the author publishes without holding `li
 > The flag is snapshotted onto the check when the request is created, so change it before requesting.
 > `required_human_approvals: 0` is refused at container build unless a validator is `blocking: true`,
 > since it would otherwise approve every request on arrival.
+> Removing a whole workflow from the config is refused too, as long as a template still names it:
+> `simple-review.xml` tags `workflow="simple"`, so drop the tag in the same edit.
 
 ## D. Simple workflow: one approval, no checks
 
