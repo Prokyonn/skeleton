@@ -5321,12 +5321,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Prokyonn/sulu.git",
-                "reference": "37ccf8d50312d1a1fcf9dbe26a91b9f70ecec74f"
+                "reference": "cbb9e446b3162ece0b78a5960956320459e82229"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Prokyonn/sulu/zipball/37ccf8d50312d1a1fcf9dbe26a91b9f70ecec74f",
-                "reference": "37ccf8d50312d1a1fcf9dbe26a91b9f70ecec74f",
+                "url": "https://api.github.com/repos/Prokyonn/sulu/zipball/cbb9e446b3162ece0b78a5960956320459e82229",
+                "reference": "cbb9e446b3162ece0b78a5960956320459e82229",
                 "shasum": ""
             },
             "require": {
@@ -5652,7 +5652,7 @@
                 "source": "https://github.com/sulu/skeleton",
                 "docs": "https://docs.sulu.io/"
             },
-            "time": "2026-09-10T10:34:44+00:00"
+            "time": "2026-09-10T11:35:40+00:00"
         },
         {
             "name": "symfony-cmf/routing",
