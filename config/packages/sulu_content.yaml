@@ -14,11 +14,11 @@ sulu_content:
             # not count: they report on the content, they do not stand in for a reviewer. Self-review
             # is not allowed, so these are *other* users holding the `review` permission. Someone with
             # the `live` permission can still take the "Bypass review and publish" route.
-            required_human_approvals: 2
+            required_user_approvals: 2
 
-            # Hard gates, checked synchronously on `request_for_review`, `publish` and
-            # `bypass_publish` alike. A failing pre-validator aborts the transition, so nothing is
-            # written and the author is told what to fix while the content is still editable. Use
+            # Hard gates, checked synchronously on `request_for_review` and `publish` alike. A
+            # failing pre-validator aborts the transition, so the content stays where it is and the
+            # author is told what to fix. The save itself has already run, so the edit is kept. Use
             # these for anything that must never be waved through, on any route to live.
             pre_validators:
                 seo_required:
@@ -28,17 +28,17 @@ sulu_content:
 
             # Automated checks, run over the message bus once the request exists, so a slow one (an
             # LLM, a remote service) does not hold up the request. They never count towards
-            # `required_human_approvals`: a check reports on the content, it does not stand in for a
-            # reviewer. `blocking: true` makes a failure hold the request until the check passes,
+            # `required_user_approvals`: a check reports on the content, it does not stand in for a
+            # reviewer. `required: true` makes a failure hold the request until the check passes,
             # which is the exception; by default a check is informational. Route the message (see
             # config/packages/messenger.yaml) to move them onto a worker, anything doing I/O beyond
             # the local database must be routed.
             validators:
                 unpublished_references:
-                    blocking: true
+                    required: true
 
         # The "simple case": one approval, no automated checks, no hard gates. A page using the
         # `simple-review` template goes to one reviewer and is publishable as soon as that person
         # approves. Named workflows are selected by the template tag, not by resource.
         simple:
-            required_human_approvals: 1
+            required_user_approvals: 1

@@ -9,8 +9,9 @@ use Sulu\Article\Domain\Repository\ArticleRepositoryInterface;
 use Sulu\Bundle\ReferenceBundle\Domain\Repository\ReferenceRepositoryInterface;
 use Sulu\Content\Application\RequestWorkflow\Validator\RequestWorkflowValidatorInterface;
 use Sulu\Content\Application\RequestWorkflow\Validator\ValidationContext;
-use Sulu\Content\Application\RequestWorkflow\Validator\ValidationDecision;
+use Sulu\Content\Application\RequestWorkflow\Validator\ValidationResult;
 use Sulu\Content\Domain\Model\DimensionContentInterface;
+use Sulu\Content\Domain\Model\WorkflowTransitionRequest\DecisionMessage;
 use Sulu\Page\Domain\Model\PageInterface;
 use Sulu\Page\Domain\Repository\PageRepositoryInterface;
 
@@ -24,8 +25,8 @@ use Sulu\Page\Domain\Repository\PageRepositoryInterface;
  *
  * - It is handed only the request (resource key, id, locale) and loads everything else itself. Nothing
  *   here reads the HTTP request, so the answer is the same whether it runs inline or on a worker.
- * - It rejects with one plain-text comment listing everything it found, because the comment is read
- *   next to the reviewers' comments.
+ * - It rejects with one plain-text message listing everything it found, because no fixed translation
+ *   key can express a list of ids. Use `DecisionMessage::translated()` for anything that can.
  * - It stays quiet about what it cannot see. Only selection properties write reference rows, so a link
  *   pasted into a text editor is invisible here. An approval means "found nothing", never "there is
  *   nothing".
@@ -44,28 +45,27 @@ final class UnpublishedReferencesValidator implements RequestWorkflowValidatorIn
         return 'unpublished_references';
     }
 
-    public function check(ValidationContext $context): ValidationDecision
+    public function check(ValidationContext $context): ValidationResult
     {
-        $request = $context->request;
-        $locale = $request->getLocale();
+        $locale = $context->locale;
 
         $unpublished = [];
-        foreach ($this->findReferences($request->getResourceKey(), $request->getResourceId(), $locale) as [$resourceKey, $resourceId]) {
+        foreach ($this->findReferences($context->resourceKey, $context->resourceId, $locale) as [$resourceKey, $resourceId]) {
             if (!$this->isPublished($resourceKey, $resourceId, $locale)) {
                 $unpublished[] = $resourceKey . ' ' . $resourceId;
             }
         }
 
         if ([] === $unpublished) {
-            return ValidationDecision::approve();
+            return ValidationResult::approve();
         }
 
-        return ValidationDecision::reject(\sprintf(
+        return ValidationResult::reject(DecisionMessage::text(\sprintf(
             '%d selected %s not published: %s',
             \count($unpublished),
             1 === \count($unpublished) ? 'item is' : 'items are',
             \implode(', ', $unpublished),
-        ));
+        )));
     }
 
     /**
