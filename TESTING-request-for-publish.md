@@ -5,8 +5,8 @@ so the review flow can be clicked through end to end.
 
 ## The model
 
-- **People approve, checks report.** Only human approvals count towards `required_human_approvals`.
-- A check marked `blocking: true` holds the request until it passes, however many approvals are in.
+- **People approve, checks report.** Only human approvals count towards `required_user_approvals`.
+- A check marked `required: true` holds the request until it passes, however many approvals are in.
 - **`live`** publishes on its own authority, with or without a request.
 - **`edit`** publishes only what reviewers signed off, and only from inside the review overlay.
 - **Pre-validators** are synchronous hard gates on every route to live. **Validators** run on the bus.
@@ -40,7 +40,7 @@ symfony server:start -d
 
 | Workflow | Applies to | Approvals | Pre-validators | Validators |
 | --- | --- | --- | --- | --- |
-| `default` | pages, articles | 2 | `seo_required`, `excerpt_required` | `unpublished_references` (blocking) |
+| `default` | pages, articles | 2 | `seo_required`, `excerpt_required` | `unpublished_references` (required) |
 | `simple` | templates carrying the tag | 1 | none | none |
 
 ## A. Main path
@@ -49,7 +49,7 @@ Author requests, two reviewers approve, the author publishes without holding `li
 
 | # | As | Do | Expect |
 | --- | --- | --- | --- |
-| 1 | `wf_author` | Add a page, save as draft, then "Save and request for publish" with SEO and excerpt empty | Overlay "Content is not ready to go live", one row per check, "1 of 2 passed". No request written, form still editable |
+| 1 | `wf_author` | Add a page, save as draft, then "Save and request for publish" with SEO and excerpt empty | Overlay "Content is not ready to go live", one row per check, "0 of 2 passed". No request written, form still editable |
 | 2 | `wf_author` | Fill SEO title, SEO description, excerpt title. Relate a draft-only page. Request again | Form locked, yellow banner with "Cancel request for publish", yellow header dot |
 | 3 | `wf_author` | Open the **Review** button (one button now, not a dropdown) | Two cards: "Automated checks" with a red `unpublished_references` reading "Must pass before publishing", and "0 of 2 approved". No Approve or Reject, but a **Retry** link |
 | 4 | `wf_publisher`, then `wf_author` | Publish the related page, then Review > Retry | Check turns green, "Passed", "1 of 1 passed" |
@@ -70,15 +70,16 @@ Author requests, two reviewers approve, the author publishes without holding `li
 | 11 | `wf_author` | Same page, Save dropdown | Only "Save as draft" and "Save and request for publish". No publish route |
 | 12 | `wf_publisher` | Page with a **pending** request: Review > "Bypass review and publish" | Published without the approvals, request recorded as `Published` |
 
-## C. The blocking check
+## C. The required check
 
 | # | Do | Expect |
 | --- | --- | --- |
 | 13 | Relate an unpublished page on a request that already has both approvals | "2 of 2 approved" **and** still `Pending`. The row reads "Must pass before publishing" |
-| 14 | Set `blocking: false` for that validator, then request again | The same failure is now informational, the request reaches `Approved` |
+| 14 | Set `required: false` for that validator and clear the cache | The same failure is now informational, the open request reaches `Approved` |
 
-> The flag is snapshotted onto the check when the request is created, so change it before requesting.
-> `required_human_approvals: 0` is refused at container build unless a validator is `blocking: true`,
+> The flag is read from the config every time the status is worked out, so an open request follows the
+> change after a cache clear: the same request turns `Approved` without being requested again.
+> `required_user_approvals: 0` is refused at container build unless a validator is `required: true`,
 > since it would otherwise approve every request on arrival.
 > Removing a whole workflow from the config is refused too, as long as a template still names it:
 > `simple-review.xml` tags `workflow="simple"`, so drop the tag in the same edit.
@@ -124,5 +125,5 @@ the same request.
 - `resources` works on the `default` workflow only.
 - The "Requests for Publishing" tab shows on every page, article and snippet, and is empty where no workflow applies.
 - The Figma mock shows a `Bypassed` status. There is none, a bypass is recorded as `Published`.
-- A blocking check whose validator is no longer registered fails permanently: retry cannot pass it, so the request has to be cancelled or the config fixed.
+- A required check whose validator is no longer registered fails permanently: retry cannot pass it, so the request has to be cancelled or the config fixed.
 - Rejection is a vote, not a hand-back: the content stays locked until someone cancels.
